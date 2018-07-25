@@ -1,10 +1,7 @@
 package info.mores.expandablelistdrawer;
 
-import android.app.ActionBar;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -65,14 +62,16 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //  getActionBar().setHomeButtonEnabled(true);
+        //  getActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("Main");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
-    public void onPostCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onPostCreate(savedInstanceState, persistentState);
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
 
@@ -134,15 +133,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-     /*   expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int gruopPosition, int childPosition, long l) {
 
-                String selecteditem = ((List) (lstChild.get(listTitle.get(i)))).get(i1).toString();
+                String selecteditem = ((List) (lstChild.get(listTitle.get(gruopPosition)))).get(childPosition).toString();
 
                 getSupportActionBar().setTitle(selecteditem);
 
-                if (items[0].equalsIgnoreCase(listTitle.get(i))) {
+                if (items[0].equalsIgnoreCase(listTitle.get(gruopPosition))) {
                     iNavigationManager.showFragment(selecteditem);
                 } else {
                     throw new IllegalArgumentException("Not supported Fragment");
@@ -150,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return false;
             }
-        });*/
+        });
 
 
 
@@ -171,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initItems() {
 
-        items = new String[]{"Android", "Ios", "Xamrin", "JAVA"};
+        items = new String[]{"TAndroid", "TIos", "TXamrin", "TJAVA"};
     }
 
     @Override
