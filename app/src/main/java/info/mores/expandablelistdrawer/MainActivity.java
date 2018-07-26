@@ -2,7 +2,6 @@ package info.mores.expandablelistdrawer;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,16 +10,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import info.mores.expandablelistdrawer.Adapter.CustomExpandableListAdapter;
 import info.mores.expandablelistdrawer.Helper.FragmentNavigationManager;
 import info.mores.expandablelistdrawer.Interface.INavigationManager;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private String mActivityTitle;
     private String[] items;
-
+    private int lastPosition = -1;
     private ExpandableListView expandableListView;
     private ExpandableListAdapter adapter;
     private List<String> listTitle;
@@ -49,9 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
         initItems();
 
-        View listHeader = getLayoutInflater().inflate(R.layout.nav_header, null, false);
-        expandableListView.addHeaderView(listHeader);
+        // View listHeader = getLayoutInflater().inflate(R.layout.nav_header, null, false);
+        // expandableListView.addHeaderView(listHeader);
 
+        //listTitle.clear();
+        //  lstChild.clear();
         getData();
 
         addDrawerItems();
@@ -97,14 +100,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-              //  getSupportActionBar().setTitle("Demo Opens");
+                //  getSupportActionBar().setTitle("Demo Opens");
                 invalidateOptionsMenu();
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-              //  getSupportActionBar().setTitle("Demo Close");
+                //  getSupportActionBar().setTitle("Demo Close");
                 invalidateOptionsMenu();
             }
         };
@@ -119,10 +122,19 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new CustomExpandableListAdapter(this, listTitle, lstChild);
         expandableListView.setAdapter(adapter);
+
         expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
             @Override
-            public void onGroupExpand(int i) {
-                getSupportActionBar().setTitle(listTitle.get(i).toString());
+            public void onGroupExpand(int groupPosition) {
+                int previousGroup = -1;
+
+
+                if (lastPosition != -1
+                        && groupPosition != lastPosition) {
+                    expandableListView.collapseGroup(lastPosition);
+                }
+                lastPosition = groupPosition;
+
             }
         });
 
@@ -137,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int gruopPosition, int childPosition, long l) {
 
-                String selecteditem = ((List) (lstChild.get(listTitle.get(gruopPosition)))).get(childPosition).toString();
+              /*  String selecteditem = ((List) (lstChild.get(listTitle.get(gruopPosition)))).get(childPosition).toString();
 
                 getSupportActionBar().setTitle(selecteditem);
 
@@ -147,30 +159,43 @@ public class MainActivity extends AppCompatActivity {
                     throw new IllegalArgumentException("Not supported Fragment");
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
+                return false;*/
+
+                Toast.makeText(MainActivity.this, "text child", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
-
 
 
     }
 
     private void getData() {
 
-        List<String> titleList = Arrays.asList("TAndroid", "TIos", "TXamrin", "TJAVA");
-        List<String> childList = Arrays.asList("cAndroid", "cIos", "cXamrin", "cJAVA");
+        List<String> titleList = Arrays.asList("Dashboard", "Installation", "Callibration", "Complaints", "Appointment", "AMC", "Warranty", "Toolkit", "Report", "Make in", "Logout");
+        List<String> childAll = Arrays.asList("New", "Pending", "Done");
+        List<String> childAmc = Arrays.asList("Compressive", "Non Compressive");
 
-        lstChild = new TreeMap<>();
-        lstChild.put(titleList.get(0), childList);
-        lstChild.put(titleList.get(1), childList);
-        lstChild.put(titleList.get(2), childList);
+
+        lstChild = new LinkedHashMap<>();
+        lstChild.put(titleList.get(0), new ArrayList<String>());
+        lstChild.put(titleList.get(1), childAll);
+        lstChild.put(titleList.get(2), childAll);
+        lstChild.put(titleList.get(3), childAll);
+        lstChild.put(titleList.get(4), childAll);
+        lstChild.put(titleList.get(5), childAmc);
+        lstChild.put(titleList.get(6), new ArrayList<String>());
+        lstChild.put(titleList.get(7), new ArrayList<String>());
+        lstChild.put(titleList.get(8), new ArrayList<String>());
+        lstChild.put(titleList.get(9), new ArrayList<String>());
+        lstChild.put(titleList.get(10), new ArrayList<String>());
+        //   lstChild.put(titleList.get(11), new ArrayList<String>());
 
         listTitle = new ArrayList<>(lstChild.keySet());
     }
 
     private void initItems() {
 
-        items = new String[]{"TAndroid", "TIos", "TXamrin", "TJAVA"};
+        items = new String[]{"Dashboard", "Installation", "Callibration", "Complaints", "Appointment", "AMC", "Warranty", "Toolkit", "Report", "Make in", "Logout"};
     }
 
     @Override
@@ -189,3 +214,4 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
