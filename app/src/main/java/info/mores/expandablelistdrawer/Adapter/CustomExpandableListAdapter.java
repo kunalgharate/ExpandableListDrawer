@@ -1,11 +1,11 @@
 package info.mores.expandablelistdrawer.Adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -13,11 +13,13 @@ import java.util.Map;
 
 import info.mores.expandablelistdrawer.R;
 
+
 public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<String> listTitle;
-    private Map<String,List<String>> listItem;
+    public static int childCount;
+    private Map<String, List<String>> listItem;
 
     public CustomExpandableListAdapter(Context context, List<String> listTitle, Map<String, List<String>> listItem) {
         this.context = context;
@@ -32,8 +34,11 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int i) {
-        return listItem.size();
+        return listItem.get(listTitle.get(i)).size() > 0 ? listItem.get(listTitle.get(i)).size() : 0;
+
+        // return listItem.size();
     }
+
 
     @Override
     public Object getGroup(int i) {
@@ -42,8 +47,8 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return listItem.get(listTitle.get(groupPosition)).get(childPosition);
 
+        return listItem.get(listTitle.get(groupPosition)).get(childPosition);
     }
 
     @Override
@@ -64,27 +69,32 @@ public class CustomExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
 
-        String title =(String) getGroup(i);
-        if (view == null)
-        {
-            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_group,null);
+        String title = (String) getGroup(i);
+        if (view == null) {
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_group, null);
         }
 
-        TextView titleText =view.findViewById(R.id.listTitle);
-        titleText.setTypeface(null, Typeface.   BOLD);
+        TextView titleText = view.findViewById(R.id.listTitle);
+        ImageView imageView = view.findViewById(R.id.imgView);
         titleText.setText(title);
+
+        childCount = getChildrenCount(i);
+
+        if (childCount > 1) {
+            //INFLATE EMPTY VIEW
+            imageView.setImageResource(R.drawable.drop_down_24dp);
+        }
         return view;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean b, View view, ViewGroup viewGroup) {
-        String title =(String) getChild(groupPosition,childPosition);
-        if (view == null)
-        {
-            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item,null);
+        String title = getChild(groupPosition, childPosition).toString();
+        if (view == null) {
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item, null);
         }
 
-        TextView childText =view.findViewById(R.id.expandableListItem);
+        TextView childText = view.findViewById(R.id.expandableListItem);
         childText.setText(title);
         return view;
     }
